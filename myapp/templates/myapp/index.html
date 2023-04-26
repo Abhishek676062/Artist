@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Artworks</title>
+    <style>
+      /* Internal CSS */
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+      tr:hover {
+        background-color: #f5f5f5;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Artworks</h1>
+    <table id="artworks-table">
+      <thead>
+        <tr>
+          <th>Artist</th>
+          <th>Link</th>
+          <th>Type</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <script>
+      // Internal JavaScript
+      const baseUrl = 'http://127.0.0.1:8000/api/works';
+      const queryParams = new URLSearchParams(window.location.search);
+      const artistName = queryParams.get('artist');
+      const workType = queryParams.get('work_type');
+      const url = artistName ? `${baseUrl}?artist=${artistName}` :
+                  workType ? `${baseUrl}?work_type=${workType}` :
+                  baseUrl;
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          const tbody = document.querySelector('#artworks-table tbody');
+          tbody.innerHTML = '';
+          data.forEach(work => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${work.artist}</td>
+              <td><a href="${work.link}">${work.link}</a></td>
+              <td>${work.work_type}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        });
+    </script>
+  </body>
+</html>
